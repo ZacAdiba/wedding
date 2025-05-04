@@ -6,36 +6,26 @@ document.getElementById('confirmBtn').addEventListener('click', async () => {
   }
 
   try {
-    // build a simple form body
-    const form = new URLSearchParams();
-    form.append('index', currentIndex);
-    form.append('buyer', buyer);
+    console.log('Recording purchase via GET…');
+    // Fire a simple GET with index & buyer in querystring
+    const url = `${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`;
+    // Fetch (mode default) → no preflight
+    await fetch(url);
 
-    console.log('Posting purchase…', {index: currentIndex, buyer});
-    const postRes = await fetch(SHEET_URL, {
-      method: 'POST',
-      body: form
-    });
-    const text = await postRes.text();
-    console.log('Post response:', text);
-
-    if (!postRes.ok || text.substring(0,2) !== 'OK') {
-      throw new Error(text);
-    }
-
-    // refresh & redirect
+    // Now re-fetch items and update UI
     const items = await fetchItems();
     renderRegistry(items);
     hideModal();
 
+    // Redirect to Starling with dynamic amount & message
     const item = items[currentIndex];
-    const url  = new URL('https://settleup.starlingbank.com/zacharyellis');
-    url.searchParams.set('amount', item.Price);
-    url.searchParams.set('message', item.Name);
-    window.location.href = url.toString();
-  }
-  catch(err) {
-    console.error('Purchase error:', err);
-    alert('Oops—could not record your gift. Please try again.');
+    const payUrl = new URL('https://settleup.starlingbank.com/zacharyellis');
+    payUrl.searchParams.set('amount', item.Price);
+    payUrl.searchParams.set('message', item.Name);
+    window.location.href = payUrl.toString();
+
+  } catch (err) {
+    console.error('Error in purchase flow:', err);
+    alert('Sorry, something went wrong. Please try again.');
   }
 });

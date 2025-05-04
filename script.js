@@ -1,4 +1,5 @@
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
+let currentIndex = null;
 
 async function fetchItems() {
   const res = await fetch(SHEET_URL);
@@ -26,15 +27,29 @@ function renderRegistry(items) {
 
 function attachButtons() {
   document.querySelectorAll('button[data-idx]').forEach(btn => {
-    btn.onclick = () => openPrompt(btn.dataset.idx);
+    btn.onclick = () => showModal(btn.dataset.idx);
   });
 }
 
-function openPrompt(index) {
-  const buyer = prompt("Enter your name to confirm:");
-  if (!buyer) return;
-  purchaseItem(index, buyer);
+function showModal(index) {
+  currentIndex = index;
+  document.getElementById('buyerName').value = '';
+  document.getElementById('modal').classList.add('active');
 }
+
+function hideModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+document.getElementById('cancelBtn').addEventListener('click', hideModal);
+document.getElementById('confirmBtn').addEventListener('click', () => {
+  const buyer = document.getElementById('buyerName').value.trim();
+  if (!buyer) {
+    alert('Please enter your name.');
+    return;
+  }
+  purchaseItem(currentIndex, buyer);
+});
 
 async function purchaseItem(idx, buyer) {
   await fetch(SHEET_URL, {
@@ -42,11 +57,10 @@ async function purchaseItem(idx, buyer) {
     body: JSON.stringify({ index: idx, buyer }),
     headers: { 'Content-Type': 'application/json' }
   });
-  // reload data & UI
   const items = await fetchItems();
   renderRegistry(items);
+  hideModal();
 
-  // redirect to SettleUp
   const item = items[idx];
   const url = new URL('https://settleup.starlingbank.com/zacharyellis');
   url.searchParams.set('amount', item.Price);
@@ -54,5 +68,5 @@ async function purchaseItem(idx, buyer) {
   window.location.href = url.toString();
 }
 
-// init
+// Initialize
 fetchItems().then(renderRegistry);

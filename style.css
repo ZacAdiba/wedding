@@ -1,0 +1,24 @@
+/* Base theme from your invite: deep burgundy & gold accents */
+body {
+  margin:0; padding:1rem;
+  font-family: 'Cormorant', serif;
+  background: #FAF2E8;
+  color: #5C1D13;
+}
+header { text-align:center; max-width:600px; margin:0 auto; }
+h1 { font-size:2rem; margin-bottom:0.5rem; }
+#registry {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1rem;
+  margin:2rem 0;
+}
+.item {
+  border:1px solid #D6A96E;
+  padding:1rem;
+  text-align:center;
+  background:#fff;
+}
+.item.unavailable { opacity:0.5; }
+.item img { max-width:100%; height:auto; }
+button { margin-top:0.5rem; padding:0.5rem 1rem; border:none; cursor:pointer; }

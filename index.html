@@ -3,22 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Adiba & Zac’s Wedding Registry</title>
+  <title>Adiba &amp; Zac’s Wedding Registry</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <h1>Adiba &amp; Zac's Wedding Registry</h1>
-    <p>Please know that your presence at our wedding is present enough! However, for friends and family who have been asking for gift ideas,
-    we've created some online registries here:</p>
+    <p>
+      Please know that your presence at our wedding is present enough! However, for friends and family
+      who have been asking for gift ideas, we've created some online registries here:
+    </p>
   </header>
+
   <main id="registry"></main>
+
+  <!-- Confirmation Modal -->
+  <div id="modal">
+    <div class="modal-content">
+      <h2>Confirm Your Gift</h2>
+      <label for="buyerName">Your Name:</label>
+      <input id="buyerName" type="text" placeholder="e.g. Sarah Smith">
+      <div class="modal-buttons">
+        <button id="cancelBtn">Cancel</button>
+        <button id="confirmBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <section id="cash">
     <h2>Prefer to give cash?</h2>
-    <p>Account Name: <strong>Zachary Ellis</strong><br>
-    Sort Code: <strong>XX-XX-XX</strong><br>
-    Account Number: <strong>12345678</strong></p>
+    <p>
+      Account Name: <strong>Zachary Ellis</strong><br>
+      Sort Code: <strong>XX-XX-XX</strong><br>
+      Account Number: <strong>12345678</strong>
+    </p>
   </section>
+
   <script src="script.js"></script>
 </body>
 </html>

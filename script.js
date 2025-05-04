@@ -1,16 +1,17 @@
-// Replace this with your deployed Apps Script URL:
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
+// ← your updated Apps-Script Web App URL here:
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJr…/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
 
-  // Fetch registry items
   async function fetchItems() {
+    console.log('Fetching items…');
     const res = await fetch(SHEET_URL);
-    return res.json();
+    const items = await res.json();
+    console.log('Items:', items);
+    return items;
   }
 
-  // Render the grid
   function renderRegistry(items) {
     const container = document.getElementById('registry');
     container.innerHTML = '';
@@ -30,14 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     attachButtons();
   }
 
-  // Wire up buttons
   function attachButtons() {
     document.querySelectorAll('button[data-idx]').forEach(btn => {
       btn.onclick = () => showModal(btn.dataset.idx);
     });
   }
 
-  // Modal control
   function showModal(index) {
     currentIndex = index;
     document.getElementById('buyerName').value = '';
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('cancelBtn').addEventListener('click', hideModal);
 
-  // Confirm purchase
   document.getElementById('confirmBtn').addEventListener('click', async () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) {
@@ -56,24 +54,35 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Send to Google Sheets
-    await fetch(SHEET_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ index: currentIndex, buyer })
-    });
+    try {
+      console.log('Posting purchase:', { index: currentIndex, buyer });
+      const postRes = await fetch(SHEET_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index: currentIndex, buyer })
+      });
+      const postData = await postRes.json();
+      console.log('Post response:', postData);
 
-    // Refresh, close modal
-    const items = await fetchItems();
-    renderRegistry(items);
-    hideModal();
+      if (!postData.success) {
+        throw new Error(postData.error || 'Unknown error');
+      }
 
-    // Redirect to payment
-    const item = items[currentIndex];
-    const url = new URL('https://settleup.starlingbank.com/zacharyellis');
-    url.searchParams.set('amount', item.Price);
-    url.searchParams.set('message', item.Name);
-    window.location.href = url.toString();
+      // Refresh the list
+      const items = await fetchItems();
+      renderRegistry(items);
+      hideModal();
+
+      // Redirect to Starling
+      const item = items[currentIndex];
+      const url = new URL('https://settleup.starlingbank.com/zacharyellis');
+      url.searchParams.set('amount', item.Price);
+      url.searchParams.set('message', item.Name);
+      window.location.href = url;
+    } catch (err) {
+      console.error('Error in purchase flow:', err);
+      alert('Sorry, something went wrong. Please try again or contact us.');
+    }
   });
 
   // Initial load

@@ -1,10 +1,10 @@
-// Replace with your deployed Apps Script Web App URL
-the const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
+// Your deployed Apps-Script Web App URL:
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
 
-  // 1) Fetch registry items (JSON) from your Apps Script
+  // 1) Fetch registry items from your Sheet
   async function fetchItems() {
     console.log('Fetching items…');
     const res = await fetch(SHEET_URL);
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return items;
   }
 
-  // 2) Render the grid of gifts
+  // 2) Render them into the grid
   function renderRegistry(items) {
     const container = document.getElementById('registry');
     container.innerHTML = '';
@@ -33,14 +33,14 @@ document.addEventListener('DOMContentLoaded', () => {
     attachButtons();
   }
 
-  // 3) Hook up “I’ll buy it” buttons to open modal
+  // 3) Hook up each “I’ll buy it” button
   function attachButtons() {
     document.querySelectorAll('button[data-idx]').forEach(btn => {
       btn.onclick = () => showModal(btn.dataset.idx);
     });
   }
 
-  // 4) In-page modal show/hide logic
+  // 4) Show/hide the in-page modal
   function showModal(index) {
     currentIndex = index;
     document.getElementById('buyerName').value = '';
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('cancelBtn').addEventListener('click', hideModal);
 
-  // 5) Confirm purchase: send GET, refresh UI, redirect
+  // 5) Confirm purchase: fire a simple GET, refresh UI, then redirect
   document.getElementById('confirmBtn').addEventListener('click', async () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) {
@@ -61,11 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       console.log('Recording purchase via GET…');
-      // Simple GET params to avoid CORS preflight
+      // Build a URL with query-params to avoid CORS preflight
       const url = `${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`;
-      await fetch(url);  // doGet handles writing & returns JSON
+      await fetch(url);
 
-      // Re-fetch items and update UI
+      // Re-fetch and re-render
       const items = await fetchItems();
       renderRegistry(items);
       hideModal();

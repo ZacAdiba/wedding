@@ -1,24 +1,133 @@
-/* Base theme from your invite: deep burgundy & gold accents */
+:root {
+  --brand-bg: #FAF2E8;
+  --brand-text: #5C1D13;
+  --brand-accent: #D6A96E;
+  --modal-bg: rgba(0,0,0,0.4);
+}
+
 body {
-  margin:0; padding:1rem;
+  margin: 0;
+  padding: 1rem;
   font-family: 'Cormorant', serif;
-  background: #FAF2E8;
-  color: #5C1D13;
+  background: var(--brand-bg);
+  color: var(--brand-text);
 }
-header { text-align:center; max-width:600px; margin:0 auto; }
-h1 { font-size:2rem; margin-bottom:0.5rem; }
+
+header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
 #registry {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:1rem;
-  margin:2rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
 }
+
 .item {
-  border:1px solid #D6A96E;
-  padding:1rem;
-  text-align:center;
-  background:#fff;
+  border: 1px solid var(--brand-accent);
+  padding: 1rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
 }
-.item.unavailable { opacity:0.5; }
-.item img { max-width:100%; height:auto; }
-button { margin-top:0.5rem; padding:0.5rem 1rem; border:none; cursor:pointer; }
+
+.item:hover {
+  transform: translateY(-4px);
+}
+
+.item.unavailable {
+  opacity: 0.5;
+}
+
+.item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 4px;
+  background: var(--brand-accent);
+  color: var(--brand-text);
+  transition: background 0.2s;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button:hover:not(:disabled) {
+  background: #c79950;
+}
+
+/* Modal styles */
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-bg);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  max-width: 90%;
+  width: 320px;
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: var(--brand-text);
+}
+
+.modal-content label {
+  display: block;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  flex: 1;
+  margin: 0 0.25rem;
+}

@@ -1,131 +1,79 @@
-:root {
-  --brand-bg: #FAF2E8;
-  --brand-text: #5C1D13;
-  --brand-accent: #D6A96E;
-  --modal-bg: rgba(0,0,0,0.4);
+// YOUR Apps Script Web App URL:
+const SHEET_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+let currentIndex = null;
+
+// 1) Fetch all items from your Google Sheet
+async function fetchItems() {
+  const res = await fetch(SHEET_URL);
+  return res.json();
 }
 
-body {
-  margin: 0;
-  padding: 1rem;
-  font-family: 'Cormorant', serif;
-  background: var(--brand-bg);
-  color: var(--brand-text);
+// 2) Render them in the grid
+function renderRegistry(items) {
+  const container = document.getElementById('registry');
+  container.innerHTML = '';
+  items.forEach((it, idx) => {
+    const div = document.createElement('div');
+    div.className = 'item' + (it.Taken === true ? ' unavailable' : '');
+    div.innerHTML = `
+      <img src="${it.ImageURL}" alt="${it.Name}">
+      <h3>${it.Name}</h3>
+      <p>£${it.Price}</p>
+      <button ${it.Taken ? 'disabled' : ''} data-idx="${idx}">
+        ${it.Taken ? 'Unavailable' : "I'll buy it"}
+      </button>
+    `;
+    container.append(div);
+  });
+  attachButtons();
 }
 
-header {
-  text-align: center;
-  max-width: 600px;
-  margin: 0 auto;
+// 3) Wire up each “buy” button to open the modal
+function attachButtons() {
+  document.querySelectorAll('button[data-idx]').forEach(btn => {
+    btn.onclick = () => showModal(btn.dataset.idx);
+  });
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+// 4) Show / hide modal
+function showModal(index) {
+  currentIndex = index;
+  document.getElementById('buyerName').value = '';
+  document.getElementById('modal').classList.add('active');
 }
+function hideModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+document.getElementById('cancelBtn').addEventListener('click', hideModal);
 
-#registry {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin: 2rem 0;
-}
+// 5) Confirm purchase, POST back to Sheet, refresh UI, then redirect
+document.getElementById('confirmBtn').addEventListener('click', async () => {
+  const buyer = document.getElementById('buyerName').value.trim();
+  if (!buyer) {
+    alert('Please enter your name.');
+    return;
+  }
 
-.item {
-  border: 1px solid var(--brand-accent);
-  padding: 1rem;
-  text-align: center;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
+  // POST to Apps Script
+  await fetch(SHEET_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ index: currentIndex, buyer })
+  });
 
-.item:hover {
-  transform: translateY(-4px);
-}
+  // Refresh grid
+  const items = await fetchItems();
+  renderRegistry(items);
+  hideModal();
 
-.item.unavailable {
-  opacity: 0.5;
-}
+  // Redirect to Starling with dynamic amount & message
+  const item = items[currentIndex];
+  const url = new URL('https://settleup.starlingbank.com/zacharyellis');
+  url.searchParams.set('amount', item.Price);
+  url.searchParams.set('message', item.Name);
+  window.location.href = url.toString();
+});
 
-.item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-button {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  background: var(--brand-accent);
-  color: var(--brand-text);
-  transition: background 0.2s;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-button:hover:not(:disabled) {
-  background: #c79950;
-}
-
-/* Modal styles */
-#modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: var(--modal-bg);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-#modal.active {
-  display: flex;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  max-width: 90%;
-  width: 320px;
-  text-align: center;
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  color: var(--brand-text);
-}
-
-.modal-content label {
-  display: block;
-  margin: 1rem 0;
-  text-align: left;
-}
-
-.modal-content input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-.modal-buttons button {
-  flex: 1;
-  margin: 0 0.25rem;
-}
+// 6) Initial load
+fetchItems().then(renderRegistry);

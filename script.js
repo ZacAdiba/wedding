@@ -1,18 +1,17 @@
-// YOUR Apps Script Web App URL:
+// Replace this with your deployed Apps Script URL:
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
 
-  // 1) Fetch items from Google Sheet
+  // Fetch registry items
   async function fetchItems() {
     const res = await fetch(SHEET_URL);
     return res.json();
   }
 
-  // 2) Render grid
+  // Render the grid
   function renderRegistry(items) {
-    console.log('Rendering', items);
     const container = document.getElementById('registry');
     container.innerHTML = '';
     items.forEach((it, idx) => {
@@ -31,16 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     attachButtons();
   }
 
-  // 3) Wire up “I’ll buy it” buttons
+  // Wire up buttons
   function attachButtons() {
     document.querySelectorAll('button[data-idx]').forEach(btn => {
       btn.onclick = () => showModal(btn.dataset.idx);
     });
   }
 
-  // 4) Modal show/hide
+  // Modal control
   function showModal(index) {
-    console.log('Opening modal for item', index);
     currentIndex = index;
     document.getElementById('buyerName').value = '';
     document.getElementById('modal').classList.add('active');
@@ -50,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('cancelBtn').addEventListener('click', hideModal);
 
-  // 5) Confirm purchase
+  // Confirm purchase
   document.getElementById('confirmBtn').addEventListener('click', async () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) {
@@ -58,19 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // POST back to your Apps Script
+    // Send to Google Sheets
     await fetch(SHEET_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ index: currentIndex, buyer })
     });
 
-    // Refresh grid & close modal
+    // Refresh, close modal
     const items = await fetchItems();
     renderRegistry(items);
     hideModal();
 
-    // Redirect to Starling with correct amount & message
+    // Redirect to payment
     const item = items[currentIndex];
     const url = new URL('https://settleup.starlingbank.com/zacharyellis');
     url.searchParams.set('amount', item.Price);
@@ -78,6 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.href = url.toString();
   });
 
-  // 6) Kick things off
+  // Initial load
   fetchItems().then(renderRegistry);
 });

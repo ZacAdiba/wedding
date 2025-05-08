@@ -1,9 +1,9 @@
 :root {
   --page-bg: #fafafa;
-  --text-primary: #333;
+  --text: #333;
   --accent: #5C1D13;
   --accent-light: #d6a96e;
-  --card-bg: #fff;
+  --card: #fff;
   --shadow: rgba(0,0,0,0.1);
 }
 
@@ -12,7 +12,7 @@ body {
   padding: 2rem;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--page-bg);
-  color: var(--text-primary);
+  color: var(--text);
   line-height: 1.6;
 }
 
@@ -28,15 +28,20 @@ header {
   margin: 0 auto 2rem;
 }
 
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
+h1 { font-size: 2.5rem; margin-bottom: .5rem; }
 
 header p {
   max-width: 700px;
-  margin: 0.5rem auto;
+  margin: .5rem auto;
   font-size: 1.1rem;
+}
+
+#love-section {
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
 }
 
 #registry {
@@ -47,13 +52,13 @@ header p {
 }
 
 .item {
-  background: var(--card-bg);
+  background: var(--card);
   border-radius: 12px;
   box-shadow: 0 4px 12px var(--shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform .3s, box-shadow .3s;
 }
 
 .item:hover {
@@ -61,14 +66,11 @@ header p {
   box-shadow: 0 6px 16px var(--shadow);
 }
 
-.item.unavailable {
-  opacity: 0.6;
-}
+.item.unavailable { opacity: .6; }
 
-/* force square crop of all images */
 .item img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1/1;
   object-fit: cover;
 }
 
@@ -76,46 +78,35 @@ header p {
   display: flex;
   justify-content: center;
   align-items: baseline;
-  gap: 0.5rem;
+  gap: .5rem;
   padding: 1rem;
 }
 
-.item-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
+.item-header h3 { font-size: 1.25rem; margin: 0; }
 .item-header .price {
   margin: 0;
-  color: var(--text-primary);
   font-weight: 500;
+  color: var(--text);
 }
 
 button {
   background: var(--accent);
   color: #fff;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: .75rem 1.5rem;
   border-radius: 999px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background .3s;
   margin: 1rem auto;
 }
 
-button:hover:not(:disabled) {
-  background: var(--accent-light);
-}
-
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
+button:hover:not(:disabled) { background: var(--accent-light); }
+button:disabled { background: #ccc; cursor: not-allowed; }
 
 /* Modal */
 #modal {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.4);
   display: none;
   align-items: center;
@@ -123,67 +114,59 @@ button:disabled {
   z-index: 1000;
 }
 
-#modal.active {
-  display: flex;
-}
+#modal.active { display: flex; }
 
 .modal-content {
-  background: var(--card-bg);
+  background: var(--card);
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 8px 24px var(--shadow);
   width: 360px;
   text-align: center;
+  position: relative;
 }
 
-.modal-content h2 {
-  margin-bottom: 1rem;
-  font-size: 1.75rem;
-}
+.modal-content h2 { margin-bottom: 1rem; font-size: 1.75rem; }
 
 .modal-content label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: .5rem;
   text-align: center;
 }
 
 .modal-content input {
   width: 100%;
-  padding: 0.75rem;
+  padding: .75rem;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-bottom: 1.5rem;
   font-size: 1rem;
+  text-align: center;
 }
+
+/* spinner */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 4px solid var(--accent-light);
+  border-top: 4px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 1rem auto;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  gap: .5rem;
 }
 
-.modal-buttons button {
-  flex: 1;
-}
+.modal-buttons button { flex: 1; }
 
-/* Cash & love section */
-#cash, #love-section {
+/* Cash section */
+#cash {
   text-align: center;
   margin-bottom: 2rem;
-}
-
-#love-section .love-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 1rem;
-}
-
-#love-section .love-text {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem;
-  color: var(--accent);
-  line-height: 1.4;
 }

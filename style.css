@@ -46,10 +46,22 @@ header p {
 
 #love-section {
   text-align: center;
-  font-size: 1rem; /* same as body */
-  font-family: system-ui, sans-serif;
-  color: var(--accent);
   margin-bottom: 2rem;
+}
+
+.love-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto .5rem;
+}
+
+.love-text {
+  font-family: system-ui, sans-serif;
+  font-size: 1rem;
+  color: var(--accent);
 }
 
 #registry {
@@ -80,8 +92,8 @@ header p {
 
 .item img {
   width: 100%;
-  aspect-ratio: 1/1;    /* force square */
-  object-fit: cover;     /* crop */
+  aspect-ratio: 1/1;
+  object-fit: cover;
 }
 
 .item-header {
@@ -97,7 +109,7 @@ header p {
 }
 
 .item-header .price {
-  font-family: system-ui, sans-serif; /* sans for price */
+  font-family: system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
   color: var(--text);
@@ -126,14 +138,14 @@ button:disabled {
 
 /* Modal backdrop */
 #modal {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.4);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 1000;
 }
+
 #modal.active {
   display: flex;
 }
@@ -145,7 +157,6 @@ button:disabled {
   box-shadow: 0 8px 24px var(--shadow);
   width: 360px;
   text-align: center;
-  position: relative;
 }
 
 .modal-content h2 {
@@ -156,7 +167,6 @@ button:disabled {
 .modal-content label {
   display: block;
   margin-bottom: .5rem;
-  text-align: center;
 }
 
 .modal-content input {
@@ -166,14 +176,13 @@ button:disabled {
   border-radius: 8px;
   margin-bottom: 1rem;
   font-size: 1rem;
-  text-align: center;          /* center placeholder/text */
+  text-align: center;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: center;
   gap: .5rem;
-  margin-top: .5rem;
 }
 
 .modal-buttons button {

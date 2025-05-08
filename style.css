@@ -232,3 +232,26 @@ button:disabled {
   margin: 0;
 }
 
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;    /* center h2, label, etc. */
+}
+
+.modal-content h2,
+.modal-content label {
+  width: 100%;
+}
+
+.modal-content input {
+  text-align: center;    /* center typed text */
+  max-width: 300px;      /* limit width so centering is obvious */
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* center the placeholder too */
+.modal-content input::placeholder {
+  text-align: center;
+}

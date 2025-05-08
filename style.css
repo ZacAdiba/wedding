@@ -29,7 +29,7 @@ header {
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   margin-bottom: .5rem;
   line-height: 1.2;
 }
@@ -256,7 +256,7 @@ button:disabled {
   text-align: center;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   #love-section .love-image {
     width: 40px;
     height: 40px;

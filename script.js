@@ -3,7 +3,7 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2Dsr
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
-  const spinner = document.getElementById('spinner');
+  const spinner   = document.getElementById('spinner');
   const modalBtns = document.querySelector('.modal-buttons');
 
   async function fetchItems() {
@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       container.append(div);
     });
-    document.querySelectorAll('button[data-idx]').forEach(btn =>
-      btn.onclick = () => showModal(btn.dataset-idx)
+    container.querySelectorAll('button[data-idx]').forEach(btn =>
+      btn.onclick = () => showModal(btn.dataset.idx)
     );
   }
 
   function showModal(idx) {
     currentIndex = idx;
     document.getElementById('buyerName').value = '';
-    spinner.hidden = true;
+    spinner.hidden   = true;
     modalBtns.style.display = 'flex';
     document.getElementById('modal').classList.add('active');
   }
@@ -51,11 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) return alert('Please enter your name.');
 
-    // show spinner & hide buttons
-    spinner.hidden = false;
+    spinner.hidden         = false;
     modalBtns.style.display = 'none';
 
-    // fire-and-forget purchase
+    // fire-and-forget purchase call
     fetch(`${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`)
       .catch(console.error);
 
@@ -66,6 +65,5 @@ document.addEventListener('DOMContentLoaded', () => {
       `https://settleup.starlingbank.com/zacharyellis?amount=${item.Price}&message=${encodeURIComponent(item.Name)}`;
   };
 
-  // initial load
   fetchItems().then(renderRegistry);
 });

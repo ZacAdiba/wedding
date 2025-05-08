@@ -1,10 +1,10 @@
-// Your deployed Apps-Script Web App URL:
+// Your Apps Script Web App URL:
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
   const spinner = document.getElementById('spinner');
-  const modalButtons = document.querySelector('.modal-buttons');
+  const modalBtns = document.querySelector('.modal-buttons');
 
   async function fetchItems() {
     const res = await fetch(SHEET_URL);
@@ -18,10 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'item' + (it.Taken ? ' unavailable' : '');
       div.innerHTML = `
-        <div class="item-header">
-          <h3>${it.Name}</h3><span class="price">£${it.Price}</span>
-        </div>
         <img src="${it.ImageURL}" alt="${it.Name}">
+        <div class="item-header">
+          <h3>${it.Name}</h3>
+          <span class="price">£${it.Price}</span>
+        </div>
         <button ${it.Taken ? 'disabled' : ''} data-idx="${idx}">
           ${it.Taken ? 'Unavailable' : "I'll buy it"}
         </button>
@@ -29,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.append(div);
     });
     document.querySelectorAll('button[data-idx]').forEach(btn =>
-      btn.onclick = () => showModal(btn.dataset.idx)
+      btn.onclick = () => showModal(btn.dataset-idx)
     );
   }
 
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentIndex = idx;
     document.getElementById('buyerName').value = '';
     spinner.hidden = true;
-    modalButtons.style.display = 'flex';
+    modalBtns.style.display = 'flex';
     document.getElementById('modal').classList.add('active');
   }
 
@@ -50,11 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) return alert('Please enter your name.');
 
-    // show spinner & disable buttons
+    // show spinner & hide buttons
     spinner.hidden = false;
-    modalButtons.style.display = 'none';
+    modalBtns.style.display = 'none';
 
-    // fire-and-forget GET (no await on sheet-update)
+    // fire-and-forget purchase
     fetch(`${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`)
       .catch(console.error);
 

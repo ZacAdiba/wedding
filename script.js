@@ -4,7 +4,6 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2Dsr
 document.addEventListener('DOMContentLoaded', () => {
   let currentIndex = null;
 
-  // 1) Fetch registry items from your Sheet
   async function fetchItems() {
     console.log('Fetching items…');
     const res = await fetch(SHEET_URL);
@@ -13,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return items;
   }
 
-  // 2) Render them into the grid
   function renderRegistry(items) {
     const container = document.getElementById('registry');
     container.innerHTML = '';
@@ -21,9 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'item' + (it.Taken ? ' unavailable' : '');
       div.innerHTML = `
+        <div class="item-header">
+          <h3>${it.Name}</h3>
+          <span class="price">£${it.Price}</span>
+        </div>
         <img src="${it.ImageURL}" alt="${it.Name}">
-        <h3>${it.Name}</h3>
-        <p>£${it.Price}</p>
         <button ${it.Taken ? 'disabled' : ''} data-idx="${idx}">
           ${it.Taken ? 'Unavailable' : "I'll buy it"}
         </button>
@@ -33,14 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     attachButtons();
   }
 
-  // 3) Hook up each “I’ll buy it” button
   function attachButtons() {
     document.querySelectorAll('button[data-idx]').forEach(btn => {
       btn.onclick = () => showModal(btn.dataset.idx);
     });
   }
 
-  // 4) Show/hide the in-page modal
   function showModal(index) {
     currentIndex = index;
     document.getElementById('buyerName').value = '';
@@ -51,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   document.getElementById('cancelBtn').addEventListener('click', hideModal);
 
-  // 5) Confirm purchase: fire a simple GET, refresh UI, then redirect
   document.getElementById('confirmBtn').addEventListener('click', async () => {
     const buyer = document.getElementById('buyerName').value.trim();
     if (!buyer) {
@@ -61,16 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       console.log('Recording purchase via GET…');
-      // Build a URL with query-params to avoid CORS preflight
       const url = `${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`;
       await fetch(url);
 
-      // Re-fetch and re-render
       const items = await fetchItems();
       renderRegistry(items);
       hideModal();
 
-      // Redirect to Starling with dynamic amount & message
       const item = items[currentIndex];
       const payUrl = new URL('https://settleup.starlingbank.com/zacharyellis');
       payUrl.searchParams.set('amount', item.Price);
@@ -83,6 +77,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 6) Initial load
   fetchItems().then(renderRegistry);
 });

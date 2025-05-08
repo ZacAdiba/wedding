@@ -1,69 +1,62 @@
-// Your Apps Script Web App URL:
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwiJrCEtBXb_YBdTj2DsrHbLpds6X5o0JEVQuo4IG4AhPrMJDwkLmzeu_4xf4IcF94nCQ/exec';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wedding Registry</title>
 
-document.addEventListener('DOMContentLoaded', () => {
-  let currentIndex = null;
-  const spinner   = document.getElementById('spinner');
-  const modalBtns = document.querySelector('.modal-buttons');
+  <!-- Social preview -->
+  <meta property="og:title" content="Wedding Registry">
+  <meta property="og:description" content="Adiba & Zac's wedding registry—please pick a gift you'd like to contribute toward!">
+  <meta property="og:image" content="https://raw.githubusercontent.com/ZacAdiba/wedding/cb39ea4bc10a14fdc2668bf7f585e40f72612f2e/NOM%20GOOGLE%20SEO%20PREVIEWs.png">
+  <meta name="twitter:card" content="summary_large_image">
 
-  async function fetchItems() {
-    const res = await fetch(SHEET_URL);
-    return res.json();
-  }
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Adiba &amp; Zac's Wedding Registry</h1>
+    <p>Your presence on our special day is the greatest gift we could ask for.<br>
+       For those who’ve kindly asked for gift ideas, we’ve set up a registry<br>
+       where you can contribute toward a gift, which we’ll purchase ourselves.</p>
+  </header>
 
-  function renderRegistry(items) {
-    const container = document.getElementById('registry');
-    container.innerHTML = '';
-    items.forEach((it, idx) => {
-      const div = document.createElement('div');
-      div.className = 'item' + (it.Taken ? ' unavailable' : '');
-      div.innerHTML = `
-        <img src="${it.ImageURL}" alt="${it.Name}">
-        <div class="item-header">
-          <h3>${it.Name}</h3>
-          <span class="price">£${it.Price}</span>
-        </div>
-        <button ${it.Taken ? 'disabled' : ''} data-idx="${idx}">
-          ${it.Taken ? 'Unavailable' : "I'll buy it"}
-        </button>
-      `;
-      container.append(div);
-    });
-    container.querySelectorAll('button[data-idx]').forEach(btn =>
-      btn.onclick = () => showModal(btn.dataset.idx)
-    );
-  }
+  <div id="love-section">
+    <img 
+      src="https://raw.githubusercontent.com/ZacAdiba/wedding/09dc58b9105ed2dee70c7aeb07842df96346edfe/ZAC%20ABD%20ADIBA.png"
+      alt="Adiba & Zac"
+      class="love-image">
+    <div class="love-text">Lots of love Adiba &amp; Zac ×</div>
+  </div>
 
-  function showModal(idx) {
-    currentIndex = idx;
-    document.getElementById('buyerName').value = '';
-    spinner.hidden   = true;
-    modalBtns.style.display = 'flex';
-    document.getElementById('modal').classList.add('active');
-  }
+  <main id="registry"></main>
 
-  function hideModal() {
-    document.getElementById('modal').classList.remove('active');
-  }
-  document.getElementById('cancelBtn').onclick = hideModal;
+  <div id="modal">
+    <div class="modal-content">
+      <h2>Confirm Your Gift</h2>
+      <label for="buyerName">Your Name:</label>
+      <input id="buyerName" type="text" placeholder="e.g. Sarah Smith">
 
-  document.getElementById('confirmBtn').onclick = async () => {
-    const buyer = document.getElementById('buyerName').value.trim();
-    if (!buyer) return alert('Please enter your name.');
+      <hr id="loadingLine" hidden>
+      <div id="loadingMessage" hidden>
+        You will now be directed to the payment link. Thank you so much ❤️
+      </div>
 
-    spinner.hidden         = false;
-    modalBtns.style.display = 'none';
+      <div class="modal-buttons">
+        <button id="cancelBtn">Cancel</button>
+        <button id="confirmBtn">Confirm</button>
+      </div>
+    </div>
+  </div>
 
-    // fire-and-forget purchase call
-    fetch(`${SHEET_URL}?index=${currentIndex}&buyer=${encodeURIComponent(buyer)}`)
-      .catch(console.error);
+  <section id="cash">
+    <h2>Prefer to give cash?</h2>
+    <p>Account Name: <strong>Zachary Ellis</strong><br>
+       Sort Code: <strong>XX-XX-XX</strong><br>
+       Account Number: <strong>12345678</strong></p>
+  </section>
 
-    // immediate redirect
-    const items = await fetchItems();
-    const item  = items[currentIndex];
-    window.location.href =
-      `https://settleup.starlingbank.com/zacharyellis?amount=${item.Price}&message=${encodeURIComponent(item.Name)}`;
-  };
-
-  fetchItems().then(renderRegistry);
-});
+  <script src="script.js?v=9"></script>
+</body>
+</html>

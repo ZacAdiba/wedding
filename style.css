@@ -255,3 +255,13 @@ button:disabled {
 .modal-content input::placeholder {
   text-align: center;
 }
+
+@media (max-width: 480px) {
+  #love-section .love-image {
+    width: 40px;
+    height: 40px;
+  }
+  #love-section .love-text {
+    font-size: 0.9rem;
+  }
+}
